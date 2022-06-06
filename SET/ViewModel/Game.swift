@@ -10,8 +10,11 @@ import Foundation
 final class Game: ObservableObject {
     @Published var deck: [Card]
     
+    private(set) var isInitialDeal: Bool
+    
     init() {
         deck = []
+        isInitialDeal = true
         loadDeck()
     }
     
