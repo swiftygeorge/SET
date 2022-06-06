@@ -8,8 +8,10 @@
 import SwiftUI
 
 struct SetView: View {
+    @EnvironmentObject private var game: Game
+    
     var body: some View {
-        Text("Hello, world!")
+        Text("\(game.deck.count) cards")
             .padding()
     }
 }
@@ -17,5 +19,6 @@ struct SetView: View {
 struct SetView_Previews: PreviewProvider {
     static var previews: some View {
         SetView()
+            .environmentObject(Game())
     }
 }

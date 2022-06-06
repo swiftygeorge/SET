@@ -9,9 +9,12 @@ import SwiftUI
 
 @main
 struct SETApp: App {
+    @StateObject private var game = Game()
+    
     var body: some Scene {
         WindowGroup {
             SetView()
+                .environmentObject(game)
         }
     }
 }

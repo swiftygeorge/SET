@@ -17,6 +17,7 @@
 		D44F1F5C284E888000B1AC32 /* Squiggle.swift in Sources */ = {isa = PBXBuildFile; fileRef = D44F1F5B284E888000B1AC32 /* Squiggle.swift */; };
 		D44F1F5E284E896300B1AC32 /* SampleData.swift in Sources */ = {isa = PBXBuildFile; fileRef = D44F1F5D284E896300B1AC32 /* SampleData.swift */; };
 		D44F1F60284E8A6400B1AC32 /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D44F1F5F284E8A6400B1AC32 /* CardView.swift */; };
+		D44F1F62284E933100B1AC32 /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = D44F1F61284E933100B1AC32 /* Game.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,6 +32,7 @@
 		D44F1F5B284E888000B1AC32 /* Squiggle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Squiggle.swift; sourceTree = "<group>"; };
 		D44F1F5D284E896300B1AC32 /* SampleData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleData.swift; sourceTree = "<group>"; };
 		D44F1F5F284E8A6400B1AC32 /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
+		D44F1F61284E933100B1AC32 /* Game.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -65,6 +67,7 @@
 			children = (
 				D44F1F44284E7D4700B1AC32 /* SETApp.swift */,
 				D44F1F55284E845400B1AC32 /* Model */,
+				D44F1F63284E933F00B1AC32 /* ViewModel */,
 				D44F1F52284E7DBE00B1AC32 /* View */,
 				D44F1F58284E880A00B1AC32 /* Shape */,
 				D44F1F48284E7D4900B1AC32 /* Assets.xcassets */,
@@ -107,6 +110,14 @@
 				D44F1F5B284E888000B1AC32 /* Squiggle.swift */,
 			);
 			path = Shape;
+			sourceTree = "<group>";
+		};
+		D44F1F63284E933F00B1AC32 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				D44F1F61284E933100B1AC32 /* Game.swift */,
+			);
+			path = ViewModel;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -180,6 +191,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D44F1F5C284E888000B1AC32 /* Squiggle.swift in Sources */,
+				D44F1F62284E933100B1AC32 /* Game.swift in Sources */,
 				D44F1F5E284E896300B1AC32 /* SampleData.swift in Sources */,
 				D44F1F57284E880500B1AC32 /* Diamond.swift in Sources */,
 				D44F1F5A284E884E00B1AC32 /* Oval.swift in Sources */,
