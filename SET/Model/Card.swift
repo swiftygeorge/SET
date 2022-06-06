@@ -21,7 +21,7 @@ struct Card: Identifiable {
     var hasBeenDealt: Bool
     var hasBeenMatched: Bool
     
-    init(id: UUID, mainSymbol: MainSymbol, mainSymbolCount: Int, mainColor: MainColor, mainOpacity: MainOpacity, isSelected: Bool = false, isSetMember: Bool = false, failedSetTest: Bool = false, hasBeenDealt: Bool = false, hasBeenMatched: Bool = false) {
+    init(mainSymbol: MainSymbol, mainSymbolCount: Int, mainColor: MainColor, mainOpacity: MainOpacity, isSelected: Bool = false, isSetMember: Bool = false, failedSetTest: Bool = false, hasBeenDealt: Bool = false, hasBeenMatched: Bool = false) {
         self.id = UUID()
         self.mainSymbol = mainSymbol
         self.mainSymbolCount = mainSymbolCount
