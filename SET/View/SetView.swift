@@ -13,21 +13,140 @@ struct SetView: View {
     var body: some View {
         GeometryReader { geo in
             VStack {
+                Text("Deck: \(game.deck.count) cards")
                 VStack {
                     GeometryReader { geometry in
-                        AspectVGrid(cards: game.deck, aspectRatio: SetConstants.aspectRatio, size: geometry.size, initialDeal: game.isInitialDeal) { card in
+                        AspectVGrid(cards: game.dealtCards, aspectRatio: SetConstants.aspectRatio, size: geometry.size, initialDeal: game.isInitialDeal) { card in
                             CardView(card: card)
                                 .padding(SetConstants.cardPadding)
+                                .onTapGesture { self.choose(card: card) }
+                                .disabled(card.isSetMember)
                         }
                     }
                 }
                 .frame(height: geo.size.height * 0.5)
                 .fixedSize(horizontal: false, vertical: true)
+                Spacer()
+                controls
             }
             .padding([.top, .horizontal])
-//            .frame(height: geo.size.height)
         }
-        
+    }
+    
+    private var controls: some View {
+        HStack {
+            Spacer()
+            deck.onTapGesture { self.deal() }
+            Spacer()
+            Spacer()
+            discardedStack
+            Spacer()
+        }
+    }
+    
+    private var emptyStack: some View {
+        RoundedRectangle(cornerRadius: SetConstants.cornerRadius)
+            .stroke(.secondary, lineWidth: SetConstants.lineWidth)
+            .aspectRatio(SetConstants.aspectRatio, contentMode: .fit)
+            .frame(width: SetConstants.width)
+    }
+    
+    private var deck: some View {
+        VStack {
+            if game.deckIsEmpty {
+               emptyStack
+            } else {
+                ZStack {
+                    ForEach(game.deck) { card in
+                        CardView(card: card)
+                            .aspectRatio(SetConstants.aspectRatio, contentMode: .fit)
+                            .frame(width: SetConstants.width)
+                    }
+                }
+            }
+            controlTitle(text: "Deal", textColor: game.canDeal ? .blue : .secondary)
+        }
+    }
+    
+    private var discardedStack: some View {
+        VStack {
+            if game.noDiscardedCards {
+                emptyStack
+            } else {
+                ZStack {
+                    ForEach(game.discardedCards) { card in
+                        CardView(card: card)
+                            .aspectRatio(SetConstants.aspectRatio, contentMode: .fit)
+                            .frame(width: SetConstants.width)
+                    }
+                }
+            }
+            controlTitle(text: "Matched", textColor: SetConstants.systemBackground)
+        }
+    }
+    
+    @ViewBuilder
+    private func controlTitle(text: String, textColor: Color) -> some View {
+        Text(text)
+            .font(.caption)
+            .foregroundColor(textColor)
+    }
+    
+    private func deal() {
+        if game.isInitialDeal {
+            for count in 0..<12 {
+                if let topCard = game.deck.last {
+                    withAnimation(createAnimation(count: count)) {
+                        game.deal(card: topCard)
+                    }
+                }
+            }
+            game.initialize()
+        } else {
+            for count in 0..<3 {
+                if let topCard = game.deck.last {
+                    if let indexOfMatchedCard = game.dealtCards.firstIndex(where: { $0.isSetMember}) {
+                        withAnimation(createAnimation(count: count)) {
+                            game.deal(card: topCard, index: indexOfMatchedCard)
+                        }
+                    } else {
+                        withAnimation(createAnimation(count: count)) {
+                            game.deal(card: topCard)
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    private func choose(card: Card) {
+        if game.matchedCardsNotDiscarded {
+            for count in 0..<3 {
+                if let indexOfSetMember = game.dealtCards.firstIndex(where: { $0.isSetMember }) {
+                    withAnimation(createAnimation(count: count)) {
+                        game.discard(at: indexOfSetMember)
+                    }
+                }
+            }
+            game.recordDiscard()
+            game.select(card: card)
+        } else if game.setTestFailed {
+            for index in game.dealtCards.indices {
+                if game.dealtCards[index].failedSetTest {
+                    game.unmarkAsFailedSetTest(at: index)
+                    game.deselect(at: index)
+                }
+            }
+            game.resetFailedTest()
+            game.select(card: card)
+        } else {
+            game.select(card: card)
+        }
+    }
+    
+    private func createAnimation(count: Int) -> Animation {
+        let delay = Double(count) * SetConstants.delayFactor
+        return .easeInOut(duration: SetConstants.animationDuration).delay(delay)
     }
 }
 

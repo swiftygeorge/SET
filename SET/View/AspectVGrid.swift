@@ -25,7 +25,7 @@ struct AspectVGrid<Card, CardView>: View where CardView: View, Card: Identifiabl
     var body: some View {
         VStack {
             let width = widthThatFits(cardCount: cards.count, in: size, cardAspectRatio: aspectRatio)
-            let columns = self.initialDeal ? fixedWidth(cardCount: 4) : [adaptiveWidth(width: width)]
+            let columns = self.initialDeal ? fixedWidth(cardCount: 4) : cards.count < 9 ? fixedWidth(cardCount: 3) : [adaptiveWidth(width: width)]
             LazyVGrid(columns: columns) {
                 ForEach(cards) { card in
                     content(card)
