@@ -24,8 +24,10 @@ struct SetView: View {
                                 .matchedGeometryEffect(id: card.id, in: dealingNamespace)
                                 .matchedGeometryEffect(id: card.id, in: discardingNamespace)
                                 .padding(SetConstants.cardPadding)
+                                .scaleEffect(card.isSelected ? 0.85 : 1.0)
                                 .onTapGesture { self.choose(card: card) }
                                 .disabled(card.isSetMember)
+                                .animation(.easeInOut, value: card.isSelected)
                         }
                     }
                 }
@@ -140,7 +142,7 @@ struct SetView: View {
         } else if game.setTestFailed {
             for index in game.dealtCards.indices {
                 if game.dealtCards[index].failedSetTest {
-                    game.unmarkAsFailedSetTest(at: index)
+                    game.unfail(at: index)
                     game.deselect(at: index)
                 }
             }
@@ -164,7 +166,7 @@ extension SetView {
         static let aspectRatio: CGFloat = 2/3
         static let animationDuration = 0.4
         static let dealingDelayFactor = 0.3
-        static let discardingDelayFactor = 0.1
+        static let discardingDelayFactor = 0.2
         static let width: CGFloat = 50.0
         static let cardPadding: CGFloat = 4.0
         static let dozenCards = 12

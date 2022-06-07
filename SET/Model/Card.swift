@@ -34,17 +34,24 @@ struct Card: Identifiable {
         self.hasBeenMatched = hasBeenMatched
     }
     
-    mutating func markAsDealt() { hasBeenDealt = true }
+    mutating func deal() { hasBeenDealt = true }
     
     mutating func select() { isSelected.toggle() }
     
-    mutating func markAsSetMember() { isSetMember = true }
+    mutating func set() { isSetMember = true }
     
-    mutating func unmarkAsSetMember() { isSetMember = false }
+    mutating func unset() { isSetMember = false }
     
-    mutating func markAsFailedSetTest() { failedSetTest = true }
+    mutating func fail() { failedSetTest = true }
     
-    mutating func unmarkAsFailedSetTest() { failedSetTest = false }
+    mutating func unfail() { failedSetTest = false }
+    
+    mutating func match() { hasBeenMatched = true }
+    
+    mutating func discard() {
+        isSetMember = false
+        hasBeenMatched = false
+    }
 }
 
 extension Card {

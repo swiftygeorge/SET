@@ -37,7 +37,7 @@ final class Game: ObservableObject {
     func deal(card: Card, index: Int? = nil) {
         if let topCard = deck.last, topCard.id == card.id {
             var dealtCard = deck.removeLast()
-            dealtCard.markAsDealt()
+            dealtCard.deal()
             if let index = index {
                 discard(at: index)
                 dealtCards.insert(dealtCard, at: index)
@@ -67,6 +67,7 @@ final class Game: ObservableObject {
     func discard(at index: Int) {
         var discardedCard = dealtCards.remove(at: index)
         discardedCard.isSetMember = false
+        discardedCard.discard()
         discardedCards.append(discardedCard)
     }
     
@@ -80,8 +81,8 @@ final class Game: ObservableObject {
         setTestFailed = false
     }
     
-    func unmarkAsFailedSetTest(at index: Int) {
-        dealtCards[index].unmarkAsFailedSetTest()
+    func unfail(at index: Int) {
+        dealtCards[index].unfail()
     }
     
     func initialize() { isInitialDeal = false }
@@ -89,7 +90,8 @@ final class Game: ObservableObject {
     private func recordMatch() {
         for selectedCard in selectedCards {
             if let indexInDealtCards = dealtCards.firstIndex(where: { $0.id == selectedCard.id }) {
-                dealtCards[indexInDealtCards].markAsSetMember()
+                dealtCards[indexInDealtCards].set()
+                dealtCards[indexInDealtCards].match()
                 deselect(at: indexInDealtCards)
             }
         }
@@ -99,7 +101,7 @@ final class Game: ObservableObject {
     private func recordMismatch() {
         for selectedCard in selectedCards {
             if let indexInDealtCards = dealtCards.firstIndex(where: { $0.id == selectedCard.id }) {
-                dealtCards[indexInDealtCards].markAsFailedSetTest()
+                dealtCards[indexInDealtCards].fail()
             }
         }
         setTestFailed = true
