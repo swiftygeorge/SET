@@ -10,6 +10,9 @@ import SwiftUI
 struct SetView: View {
     @EnvironmentObject private var game: Game
     
+    @Namespace private var dealingNamespace
+    @Namespace private var discardingNamespace
+    
     var body: some View {
         GeometryReader { geo in
             VStack {
@@ -18,6 +21,8 @@ struct SetView: View {
                     GeometryReader { geometry in
                         AspectVGrid(cards: game.dealtCards, aspectRatio: SetConstants.aspectRatio, size: geometry.size, initialDeal: game.isInitialDeal) { card in
                             CardView(card: card)
+                                .matchedGeometryEffect(id: card.id, in: dealingNamespace)
+                                .matchedGeometryEffect(id: card.id, in: discardingNamespace)
                                 .padding(SetConstants.cardPadding)
                                 .onTapGesture { self.choose(card: card) }
                                 .disabled(card.isSetMember)
@@ -59,6 +64,7 @@ struct SetView: View {
                 ZStack {
                     ForEach(game.deck) { card in
                         CardView(card: card)
+                            .matchedGeometryEffect(id: card.id, in: dealingNamespace)
                             .aspectRatio(SetConstants.aspectRatio, contentMode: .fit)
                             .frame(width: SetConstants.width)
                     }
@@ -76,6 +82,7 @@ struct SetView: View {
                 ZStack {
                     ForEach(game.discardedCards) { card in
                         CardView(card: card)
+                            .matchedGeometryEffect(id: card.id, in: discardingNamespace)
                             .aspectRatio(SetConstants.aspectRatio, contentMode: .fit)
                             .frame(width: SetConstants.width)
                     }
@@ -145,7 +152,7 @@ struct SetView: View {
     }
     
     private func createAnimation(count: Int) -> Animation {
-        let delay = Double(count) * SetConstants.delayFactor
+        let delay = Double(count) * SetConstants.dealingDelayFactor
         return .easeInOut(duration: SetConstants.animationDuration).delay(delay)
     }
 }
@@ -156,7 +163,8 @@ extension SetView {
         static let lineWidth = 1.0
         static let aspectRatio: CGFloat = 2/3
         static let animationDuration = 0.4
-        static let delayFactor = 0.2
+        static let dealingDelayFactor = 0.3
+        static let discardingDelayFactor = 0.1
         static let width: CGFloat = 50.0
         static let cardPadding: CGFloat = 4.0
         static let dozenCards = 12
