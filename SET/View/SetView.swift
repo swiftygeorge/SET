@@ -25,6 +25,7 @@ struct SetView: View {
                                 .matchedGeometryEffect(id: card.id, in: discardingNamespace)
                                 .padding(SetConstants.cardPadding)
                                 .scaleEffect(card.isSelected ? 0.85 : 1.0)
+                                .opacity(card.isSetMember ? 0.1 : 1.0)
                                 .onTapGesture { self.choose(card: card) }
                                 .animation(.easeInOut, value: card.isSelected)
                                 .disabled(card.isSetMember)
@@ -177,7 +178,12 @@ extension SetView {
 
 struct SetView_Previews: PreviewProvider {
     static var previews: some View {
-        SetView()
-            .environmentObject(Game())
+        Group {
+            SetView()
+                .environmentObject(Game())
+            SetView()
+                .preferredColorScheme(.dark)
+                .environmentObject(Game())
+        }
     }
 }
