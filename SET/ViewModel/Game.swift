@@ -57,7 +57,11 @@ final class Game: ObservableObject {
                 selectedCards = selectedCards.filter({ $0.id != card.id })
             }
         }
-        if readyToMatch { match() ? recordMatch() : recordMismatch() }
+        if readyToMatch {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                self.match() ? self.recordMatch() : self.recordMismatch()
+            }
+        }
     }
     
     func deselect(at index: Int) {

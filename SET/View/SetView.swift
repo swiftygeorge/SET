@@ -26,8 +26,8 @@ struct SetView: View {
                                 .padding(SetConstants.cardPadding)
                                 .scaleEffect(card.isSelected ? 0.85 : 1.0)
                                 .onTapGesture { self.choose(card: card) }
-                                .disabled(card.isSetMember)
                                 .animation(.easeInOut, value: card.isSelected)
+                                .disabled(card.isSetMember)
                         }
                     }
                 }
