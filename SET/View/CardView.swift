@@ -24,7 +24,7 @@ struct CardView: View {
                     VStack {
                         ForEach(0..<card.mainSymbolCount, id:\.self) { count in
                             ZStack {
-                                if card.isSelected {
+                                if card.isSetMember {
                                     symbol(card.mainSymbol, width: width)
                                         .scaleEffect(symbolPulse)
                                         .onAppear {
