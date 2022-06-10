@@ -13,6 +13,10 @@ struct SetView: View {
     @Namespace private var dealingNamespace
     @Namespace private var discardingNamespace
     
+    @State private var shakeCount = 0
+    
+    var failSetTest: Bool { game.setTestFailed }
+    
     var body: some View {
         GeometryReader { geo in
             VStack {
@@ -25,10 +29,16 @@ struct SetView: View {
                                 .matchedGeometryEffect(id: card.id, in: discardingNamespace)
                                 .padding(SetConstants.cardPadding)
                                 .scaleEffect(card.isSelected ? 0.85 : 1.0)
-                                .opacity(card.isSetMember ? 0.1 : 1.0)
                                 .onTapGesture { self.choose(card: card) }
                                 .animation(.easeInOut, value: card.isSelected)
                                 .disabled(card.isSetMember)
+                        }
+                        .onChange(of: game.setTestFailed) { newValue in
+                            if game.setTestFailed {
+                                shakeCount = 2
+                            } else {
+                                shakeCount = 0
+                            }
                         }
                     }
                 }
@@ -44,25 +54,25 @@ struct SetView: View {
     private var controls: some View {
         HStack {
             Spacer()
-            deck.onTapGesture { self.deal() }
+            deck().onTapGesture { self.deal() }
             Spacer()
             Spacer()
-            discardedStack
+            discardedStack()
             Spacer()
         }
     }
     
-    private var emptyStack: some View {
+    private func emptyStack() -> some View {
         RoundedRectangle(cornerRadius: SetConstants.cornerRadius)
             .stroke(.secondary, lineWidth: SetConstants.lineWidth)
             .aspectRatio(SetConstants.aspectRatio, contentMode: .fit)
             .frame(width: SetConstants.width)
     }
     
-    private var deck: some View {
+    private func deck() -> some View {
         VStack {
             if game.deckIsEmpty {
-               emptyStack
+               emptyStack()
             } else {
                 ZStack {
                     ForEach(game.deck) { card in
@@ -77,10 +87,10 @@ struct SetView: View {
         }
     }
     
-    private var discardedStack: some View {
+    private func discardedStack() -> some View {
         VStack {
             if game.noDiscardedCards {
-                emptyStack
+                emptyStack()
             } else {
                 ZStack {
                     ForEach(game.discardedCards) { card in
@@ -174,6 +184,10 @@ extension SetView {
         static let threeCards = 3
         static let systemBackground = Color(UIColor.systemBackground)
     }
+}
+
+struct RotationEffect: Animatable {
+    
 }
 
 struct SetView_Previews: PreviewProvider {

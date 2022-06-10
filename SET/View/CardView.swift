@@ -10,22 +10,7 @@ import SwiftUI
 struct CardView: View {
     let card: Card
     
-    private var mainColor: Color {
-        switch card.mainColor {
-        case .mainGreen:
-            return .green
-        case .mainPurple:
-            return .purple
-        case .mainRed:
-            return .red
-        }
-    }
-    
-    private var strokeColor: Color {
-        withAnimation {
-            card.isSelected ? .blue : .secondary.opacity(0.4)
-        }
-    }
+    @State private var symbolPulse: CGFloat = 1
     
     var body: some View {
         GeometryReader { geometry in
@@ -34,13 +19,27 @@ struct CardView: View {
             if card.hasBeenDealt {
                 ZStack {
                     RoundedRectangle(cornerRadius: CardConstants.cornerRadius)
-                        .stroke(strokeColor, lineWidth: CardConstants.lineWidth)
+                        .stroke(strokeColor(), lineWidth: CardConstants.lineWidth)
                     cardBackground()
                     VStack {
                         ForEach(0..<card.mainSymbolCount, id:\.self) { count in
-                            createView(for: card.mainSymbol)
-                                .aspectRatio(CardConstants.aspectRatio, contentMode: .fit)
-                                .frame(maxWidth: width * CardConstants.widthFactor)
+                            ZStack {
+                                if card.isSelected {
+                                    createView(for: card.mainSymbol)
+                                        .aspectRatio(CardConstants.aspectRatio, contentMode: .fit)
+                                        .frame(maxWidth: width * CardConstants.widthFactor)
+                                        .scaleEffect(symbolPulse)
+                                        .onAppear {
+                                            withAnimation(.easeInOut.repeatForever(autoreverses: true)) {
+                                                symbolPulse = 1.05 * symbolPulse
+                                            }
+                                        }
+                                } else {
+                                    createView(for: card.mainSymbol)
+                                        .aspectRatio(CardConstants.aspectRatio, contentMode: .fit)
+                                        .frame(maxWidth: width * CardConstants.widthFactor)
+                                }
+                            }
                         }
                     }
                     .padding(width * CardConstants.paddingFactor)
@@ -55,21 +54,38 @@ struct CardView: View {
         }
     }
     
+    private func mainColor() -> Color {
+        switch card.mainColor {
+        case .mainGreen:
+            return .green
+        case .mainPurple:
+            return .purple
+        case .mainRed:
+            return .red
+        }
+    }
+    
+    private func strokeColor() -> Color {
+        withAnimation {
+            card.isSelected ? .blue : .secondary.opacity(0.4)
+        }
+    }
+    
     @ViewBuilder
     private func createView(for symbol: Card.MainSymbol) -> some View {
         switch symbol {
         case .diamond:
             Diamond()
-                .stroke(mainColor, lineWidth: CardConstants.lineWidth)
-                .background(Diamond().fill((mainColor.opacity(card.mainOpacity.level))))
+                .stroke(mainColor(), lineWidth: CardConstants.lineWidth)
+                .background(Diamond().fill((mainColor().opacity(card.mainOpacity.level))))
         case .oval:
             Oval()
-                .stroke(mainColor, lineWidth: CardConstants.lineWidth)
-                .background(Oval().fill((mainColor.opacity(card.mainOpacity.level))))
+                .stroke(mainColor(), lineWidth: CardConstants.lineWidth)
+                .background(Oval().fill((mainColor().opacity(card.mainOpacity.level))))
         case .squiggle:
             Squiggle()
-                .stroke(mainColor, lineWidth: CardConstants.lineWidth)
-                .background(Squiggle().fill((mainColor.opacity(card.mainOpacity.level))))
+                .stroke(mainColor(), lineWidth: CardConstants.lineWidth)
+                .background(Squiggle().fill((mainColor().opacity(card.mainOpacity.level))))
         }
     }
     
