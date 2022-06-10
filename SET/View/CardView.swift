@@ -9,8 +9,8 @@ import SwiftUI
 
 struct CardView: View {
     let card: Card
-    
     @State private var symbolPulse: CGFloat = 1
+    @State private var shakeCount = 0
     
     var body: some View {
         GeometryReader { geometry in
@@ -33,9 +33,20 @@ struct CardView: View {
                                             }
                                         }
                                 } else {
-                                    symbol(card.mainSymbol, width: width)
-                                        .aspectRatio(CardConstants.aspectRatio, contentMode: .fit)
-                                        .frame(maxWidth: width * CardConstants.widthFactor)
+                                    if card.failedSetTest {
+                                        symbol(card.mainSymbol, width: width)
+                                            .aspectRatio(CardConstants.aspectRatio, contentMode: .fit)
+                                            .frame(maxWidth: width * CardConstants.widthFactor)
+                                            .modifier(ShakeEffect(animatableData: CGFloat(shakeCount)))
+                                            .onAppear {
+                                                withAnimation { shakeCount = 3 }
+                                            }
+                                    } else {
+                                        symbol(card.mainSymbol, width: width)
+                                            .aspectRatio(CardConstants.aspectRatio, contentMode: .fit)
+                                            .frame(maxWidth: width * CardConstants.widthFactor)
+                                            .onAppear { shakeCount = 0 }
+                                    }
                                 }
                             }
                         }
@@ -104,6 +115,15 @@ struct CardView: View {
                 .fill(CardConstants.gradient)
                 .shadow(color: CardConstants.shadowColor, radius: CardConstants.shadowRadius, x: CardConstants.shadowXOffset, y: CardConstants.shadowYOffset)
         }
+    }
+}
+
+struct ShakeEffect: GeometryEffect {
+    var amount: CGFloat = 10
+    var shakesPerUnit = 3
+    var animatableData: CGFloat
+    func effectValue(size: CGSize) -> ProjectionTransform {
+        ProjectionTransform(CGAffineTransform(translationX: amount * sin(animatableData * .pi * CGFloat(shakesPerUnit)), y: 0))
     }
 }
 
