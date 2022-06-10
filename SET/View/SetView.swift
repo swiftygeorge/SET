@@ -20,7 +20,6 @@ struct SetView: View {
     var body: some View {
         GeometryReader { geo in
             VStack {
-                Text("Deck: \(game.deck.count) cards")
                 VStack {
                     GeometryReader { geometry in
                         AspectVGrid(cards: game.dealtCards, aspectRatio: SetConstants.aspectRatio, size: geometry.size, initialDeal: game.isInitialDeal) { card in
