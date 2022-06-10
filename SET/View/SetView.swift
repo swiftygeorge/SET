@@ -28,9 +28,9 @@ struct SetView: View {
                                 .matchedGeometryEffect(id: card.id, in: dealingNamespace)
                                 .matchedGeometryEffect(id: card.id, in: discardingNamespace)
                                 .padding(SetConstants.cardPadding)
-                                .scaleEffect(card.isSelected ? 0.85 : 1.0)
+                                .scaleEffect(card.isSetMember ? 0.85 : 1.0)
                                 .onTapGesture { self.choose(card: card) }
-                                .animation(.easeInOut, value: card.isSelected)
+                                .animation(.easeInOut, value: card.isSetMember)
                                 .disabled(card.isSetMember)
                         }
                         .onChange(of: game.setTestFailed) { newValue in

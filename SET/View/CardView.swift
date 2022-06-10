@@ -25,9 +25,7 @@ struct CardView: View {
                         ForEach(0..<card.mainSymbolCount, id:\.self) { count in
                             ZStack {
                                 if card.isSelected {
-                                    createView(for: card.mainSymbol)
-                                        .aspectRatio(CardConstants.aspectRatio, contentMode: .fit)
-                                        .frame(maxWidth: width * CardConstants.widthFactor)
+                                    symbol(card.mainSymbol, width: width)
                                         .scaleEffect(symbolPulse)
                                         .onAppear {
                                             withAnimation(.easeInOut.repeatForever(autoreverses: true)) {
@@ -35,7 +33,7 @@ struct CardView: View {
                                             }
                                         }
                                 } else {
-                                    createView(for: card.mainSymbol)
+                                    symbol(card.mainSymbol, width: width)
                                         .aspectRatio(CardConstants.aspectRatio, contentMode: .fit)
                                         .frame(maxWidth: width * CardConstants.widthFactor)
                                 }
@@ -69,6 +67,12 @@ struct CardView: View {
         withAnimation {
             card.isSelected ? .blue : .secondary.opacity(0.4)
         }
+    }
+    
+    private func symbol(_ symbol: Card.MainSymbol, width: CGFloat) -> some View {
+        createView(for: symbol)
+            .aspectRatio(CardConstants.aspectRatio, contentMode: .fit)
+            .frame(maxWidth: width * CardConstants.widthFactor)
     }
     
     @ViewBuilder
