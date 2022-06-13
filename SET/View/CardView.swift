@@ -19,7 +19,7 @@ struct CardView: View {
             if card.hasBeenDealt {
                 ZStack {
                     RoundedRectangle(cornerRadius: CardConstants.cornerRadius)
-                        .stroke(strokeColor(), lineWidth: CardConstants.lineWidth)
+                        .stroke(strokeColor(), lineWidth: lineWidth())
                     cardBackground()
                     VStack {
                         ForEach(0..<card.mainSymbolCount, id:\.self) { count in
@@ -76,7 +76,13 @@ struct CardView: View {
     
     private func strokeColor() -> Color {
         withAnimation {
-            card.isSelected ? .blue : .secondary.opacity(0.4)
+            card.isSelected ? .blue : card.isSetMember ? mainColor() : .secondary.opacity(0.4)
+        }
+    }
+    
+    private func lineWidth() -> CGFloat {
+        withAnimation {
+            card.isSetMember ? 2 : CardConstants.lineWidth
         }
     }
     
