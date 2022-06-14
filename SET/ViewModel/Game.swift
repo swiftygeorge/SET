@@ -169,7 +169,7 @@ final class Game: ObservableObject {
             let symbolCards = createCards(for: mainSymbol)
             cards += symbolCards
         }
-        deck = cards
+        deck = cards.shuffled()
     }
     
     private func createCards(for mainSymbol: Card.MainSymbol) -> [Card] {
