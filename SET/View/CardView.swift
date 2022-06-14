@@ -82,7 +82,7 @@ struct CardView: View {
     
     private func lineWidth() -> CGFloat {
         withAnimation {
-            card.isSetMember ? 2 : CardConstants.lineWidth
+            card.isSetMember ? 4 : CardConstants.lineWidth
         }
     }
     

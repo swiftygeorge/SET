@@ -36,6 +36,15 @@ final class Game: ObservableObject {
         loadDeck()
     }
     
+    func newGame() {
+        deck = deck.shuffled()
+        selectedCards = []
+        matchedCardsNotDiscarded = false
+        setTestFailed = false
+        isInitialDeal = true
+        score = 0
+    }
+    
     func deal(card: Card, index: Int? = nil) {
         if let topCard = deck.last, topCard.id == card.id {
             var dealtCard = deck.removeLast()
@@ -77,6 +86,11 @@ final class Game: ObservableObject {
         discardedCards.append(discardedCard)
     }
     
+    func acquire(at index: Int, fromDealtCards: Bool = false) {
+        let acquiredCard = fromDealtCards ? dealtCards.remove(at: index) : discardedCards.remove(at: index)
+        deck.append(reset(card: acquiredCard))
+    }
+    
     func recordDiscard() {
         selectedCards = []
         matchedCardsNotDiscarded = false
@@ -92,6 +106,16 @@ final class Game: ObservableObject {
     }
     
     func initialize() { isInitialDeal = false }
+    
+    private func reset(card: Card) -> Card {
+        var cardToReset = card
+        cardToReset.undeal()
+        cardToReset.unset()
+        cardToReset.unfail()
+        cardToReset.unmatch()
+        if cardToReset.isSelected { cardToReset.select() }
+        return cardToReset
+    }
     
     private func recordMatch() {
         for selectedCard in selectedCards {
@@ -145,7 +169,7 @@ final class Game: ObservableObject {
             let symbolCards = createCards(for: mainSymbol)
             cards += symbolCards
         }
-        deck = cards.shuffled()
+        deck = cards
     }
     
     private func createCards(for mainSymbol: Card.MainSymbol) -> [Card] {

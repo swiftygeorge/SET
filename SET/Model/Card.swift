@@ -48,6 +48,10 @@ struct Card: Identifiable {
     
     mutating func match() { hasBeenMatched = true }
     
+    mutating func unmatch() { hasBeenMatched = false }
+    
+    mutating func undeal() { hasBeenDealt = false }
+    
     mutating func discard() {
         isSetMember = false
         hasBeenMatched = false

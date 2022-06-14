@@ -27,12 +27,13 @@ struct SetView: View {
                         .foregroundStyle(SetConstants.gradient)
                     Spacer()
                     Button {
-                        // start a new game
+                        self.restart()
                     } label: {
                         Label("New Game", systemImage: "plus")
                             .labelStyle(.titleOnly)
                             .font(.title3)
                     }
+                    .disabled(game.dealtCards.isEmpty && game.noDiscardedCards)
                 }
                 
                 VStack {
@@ -181,8 +182,26 @@ struct SetView: View {
         }
     }
     
-    private func createAnimation(count: Int) -> Animation {
-        let delay = Double(count) * SetConstants.dealingDelayFactor
+    private func restart() {
+        for index in 0..<game.dealtCards.count {
+            withAnimation(createAnimation(count: index, delayFactor: SetConstants.acquiringDelayFactor)) {
+                if game.dealtCards.first != nil {
+                    game.acquire(at: 0, fromDealtCards: true)
+                }
+            }
+        }
+        for index in 0..<game.discardedCards.count {
+            withAnimation(createAnimation(count: index, delayFactor: SetConstants.acquiringDelayFactor)) {
+                if game.discardedCards.first != nil {
+                    game.acquire(at: 0)
+                }
+            }
+        }
+        game.newGame()
+    }
+    
+    private func createAnimation(count: Int, delayFactor: Double = SetConstants.dealingDelayFactor) -> Animation {
+        let delay = Double(count) * delayFactor
         return .easeInOut(duration: SetConstants.animationDuration).delay(delay)
     }
 }
@@ -195,6 +214,7 @@ extension SetView {
         static let animationDuration = 0.4
         static let dealingDelayFactor = 0.3
         static let discardingDelayFactor = 0.2
+        static let acquiringDelayFactor = 0.1
         static let width: CGFloat = 50.0
         static let cardPadding: CGFloat = 4.0
         static let dozenCards = 12
