@@ -14,12 +14,27 @@ struct SetView: View {
     @Namespace private var discardingNamespace
     
     @State private var shakeCount = 0
+    @State private var score = 0
     
-    var failSetTest: Bool { game.setTestFailed }
+    private var failSetTest: Bool { game.setTestFailed }
     
     var body: some View {
         GeometryReader { geo in
             VStack {
+                HStack(alignment: .bottom) {
+                    Text("Score: \(self.score)")
+                        .font(.title3.bold())
+                        .foregroundStyle(SetConstants.gradient)
+                    Spacer()
+                    Button {
+                        // start a new game
+                    } label: {
+                        Label("New Game", systemImage: "plus")
+                            .labelStyle(.titleOnly)
+                            .font(.title3)
+                    }
+                }
+                
                 VStack {
                     GeometryReader { geometry in
                         AspectVGrid(cards: game.dealtCards, aspectRatio: SetConstants.aspectRatio, size: geometry.size, initialDeal: game.isInitialDeal) { card in
@@ -39,6 +54,9 @@ struct SetView: View {
                                 shakeCount = 0
                             }
                         }
+                        .onChange(of: game.score) { newValue in
+                            withAnimation { score = newValue }
+                        }
                     }
                 }
                 .frame(height: geo.size.height * 0.5)
@@ -46,7 +64,7 @@ struct SetView: View {
                 Spacer()
                 controls
             }
-            .padding([.top, .horizontal])
+            .padding(.horizontal)
         }
     }
     
@@ -182,11 +200,8 @@ extension SetView {
         static let dozenCards = 12
         static let threeCards = 3
         static let systemBackground = Color(UIColor.systemBackground)
+        static let gradient = LinearGradient(colors: [.green, .purple, .red], startPoint: .topLeading, endPoint: .bottomTrailing)
     }
-}
-
-struct RotationEffect: Animatable {
-    
 }
 
 struct SetView_Previews: PreviewProvider {

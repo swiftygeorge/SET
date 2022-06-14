@@ -16,6 +16,7 @@ final class Game: ObservableObject {
     private(set) var isInitialDeal: Bool
     private(set) var matchedCardsNotDiscarded: Bool
     private(set) var setTestFailed: Bool
+    private(set) var score: Int
     
     private var noSelections: Bool { selectedCards.isEmpty }
     private var readyToMatch: Bool { selectedCards.count == 3 }
@@ -31,6 +32,7 @@ final class Game: ObservableObject {
         isInitialDeal = true
         matchedCardsNotDiscarded = false
         setTestFailed = false
+        score = 0
         loadDeck()
     }
     
@@ -130,8 +132,10 @@ final class Game: ObservableObject {
             (sameSymbol || differentSymbol) &&
             (sameOpacity || differentOpacity) &&
             (sameColor || differentColor) {
+            score += 1
             return true
         }
+        score -= 1
         return false
     }
     
